@@ -61,11 +61,14 @@ export const VirApp = defineElementNoInputs({
         ].join('?');
 
         return html`
-            From child: ${state.childData}
-            <br />
             ${renderIf(
-                !isInsideIframe,
+                isInsideIframe,
                 html`
+                    child value: ${globalThis.localStorage.getItem(randomItemKey)}
+                `,
+                html`
+                    From child: ${state.childData}
+                    <br />
                     <iframe
                         src=${iframeUrl}
                         ${onDomCreated(async (element) => {
@@ -84,7 +87,6 @@ export const VirApp = defineElementNoInputs({
                         })}
                     ></iframe>
                 `,
-                globalThis.localStorage.getItem(randomItemKey),
             )}
         `;
     },
