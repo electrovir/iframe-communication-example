@@ -42,73 +42,75 @@ type ExampleMessageData = {
 
 describe(createIframeMessenger.name, () => {
     it('has proper type constraints', async () => {
-        const messenger = createIframeMessenger<ExampleMessageData>(['']);
-        try {
-            // @ts-expect-error
-            await messenger.sendMessageToChild();
-            // should allow ExampleMessageType.Ready without any data or data verifier
-            await messenger.sendMessageToChild({
-                iframeElement: undefined as any,
-                message: {
-                    type: ExampleMessageType.Ready,
-                },
-            });
-            // ExampleMessageType.SendSize requires a data verifier
-            // @ts-expect-error
-            await messenger.sendMessageToChild({
-                iframeElement: undefined as any,
-                message: {
-                    type: ExampleMessageType.SendSize,
-                },
-            });
-            // ExampleMessageType.SendSize requires a data verifier
-            await messenger.sendMessageToChild({
-                iframeElement: undefined as any,
-                message: {
-                    type: ExampleMessageType.SendSize,
-                },
-                verifyData: () => {
-                    return true;
-                },
-            });
-            await messenger.sendMessageToChild({
-                iframeElement: undefined as any,
-                // ExampleMessageType.SendScalingMethod requires input data
+        async function typeTests() {
+            const messenger = createIframeMessenger<ExampleMessageData>(['']);
+            try {
                 // @ts-expect-error
-                message: {
-                    type: ExampleMessageType.SendScalingMethod,
-                },
-                // ExampleMessageType.SendScalingMethod has no child data, a data verifier is not allowed
+                await messenger.sendMessageToChild();
+                // should allow ExampleMessageType.Ready without any data or data verifier
+                await messenger.sendMessageToChild({
+                    iframeElement: undefined as any,
+                    message: {
+                        type: ExampleMessageType.Ready,
+                    },
+                });
+                // ExampleMessageType.SendSize requires a data verifier
                 // @ts-expect-error
-                verifyData: () => {
-                    return true;
-                },
-            });
-            // ExampleMessageType.SendScalingMethod requires data
-            await messenger.sendMessageToChild({
-                iframeElement: undefined as any,
-                message: {
-                    type: ExampleMessageType.SendScalingMethod,
-                    data: 'default',
-                },
-            });
-            await messenger.sendMessageToChild({
-                iframeElement: undefined as any,
-                message: {
-                    // cannot send error type
+                await messenger.sendMessageToChild({
+                    iframeElement: undefined as any,
+                    message: {
+                        type: ExampleMessageType.SendSize,
+                    },
+                });
+                // ExampleMessageType.SendSize requires a data verifier
+                await messenger.sendMessageToChild({
+                    iframeElement: undefined as any,
+                    message: {
+                        type: ExampleMessageType.SendSize,
+                    },
+                    verifyData: () => {
+                        return true;
+                    },
+                });
+                await messenger.sendMessageToChild({
+                    iframeElement: undefined as any,
+                    // ExampleMessageType.SendScalingMethod requires input data
                     // @ts-expect-error
-                    type: 'error',
-                },
-            });
-            // ExampleMessageType.SendScalingMethod requires a specific kind of data
-            await messenger.sendMessageToChild({
-                iframeElement: undefined as any,
-                message: {
-                    type: ExampleMessageType.SendScalingMethod,
+                    message: {
+                        type: ExampleMessageType.SendScalingMethod,
+                    },
+                    // ExampleMessageType.SendScalingMethod has no child data, a data verifier is not allowed
                     // @ts-expect-error
-                    data: 'not acceptable',
-                },
-            });
-        } catch (error) {}
+                    verifyData: () => {
+                        return true;
+                    },
+                });
+                // ExampleMessageType.SendScalingMethod requires data
+                await messenger.sendMessageToChild({
+                    iframeElement: undefined as any,
+                    message: {
+                        type: ExampleMessageType.SendScalingMethod,
+                        data: 'default',
+                    },
+                });
+                await messenger.sendMessageToChild({
+                    iframeElement: undefined as any,
+                    message: {
+                        // cannot send error type
+                        // @ts-expect-error
+                        type: 'error',
+                    },
+                });
+                // ExampleMessageType.SendScalingMethod requires a specific kind of data
+                await messenger.sendMessageToChild({
+                    iframeElement: undefined as any,
+                    message: {
+                        type: ExampleMessageType.SendScalingMethod,
+                        // @ts-expect-error
+                        data: 'not acceptable',
+                    },
+                });
+            } catch (error) {}
+        }
     });
 });
