@@ -41,13 +41,13 @@ type ExampleMessageData = {
 };
 
 describe(createIframeMessenger.name, () => {
-    it('has proper type constraints', () => {
+    it('has proper type constraints', async () => {
         const messenger = createIframeMessenger<ExampleMessageData>(['']);
         try {
             // @ts-expect-error
-            messenger.sendMessageToChild();
+            await messenger.sendMessageToChild();
             // should allow ExampleMessageType.Ready without any data or data verifier
-            messenger.sendMessageToChild({
+            await messenger.sendMessageToChild({
                 iframeElement: undefined as any,
                 message: {
                     type: ExampleMessageType.Ready,
@@ -55,14 +55,14 @@ describe(createIframeMessenger.name, () => {
             });
             // ExampleMessageType.SendSize requires a data verifier
             // @ts-expect-error
-            messenger.sendMessageToChild({
+            await messenger.sendMessageToChild({
                 iframeElement: undefined as any,
                 message: {
                     type: ExampleMessageType.SendSize,
                 },
             });
             // ExampleMessageType.SendSize requires a data verifier
-            messenger.sendMessageToChild({
+            await messenger.sendMessageToChild({
                 iframeElement: undefined as any,
                 message: {
                     type: ExampleMessageType.SendSize,
@@ -71,7 +71,7 @@ describe(createIframeMessenger.name, () => {
                     return true;
                 },
             });
-            messenger.sendMessageToChild({
+            await messenger.sendMessageToChild({
                 iframeElement: undefined as any,
                 // ExampleMessageType.SendScalingMethod requires input data
                 // @ts-expect-error
@@ -85,14 +85,14 @@ describe(createIframeMessenger.name, () => {
                 },
             });
             // ExampleMessageType.SendScalingMethod requires data
-            messenger.sendMessageToChild({
+            await messenger.sendMessageToChild({
                 iframeElement: undefined as any,
                 message: {
                     type: ExampleMessageType.SendScalingMethod,
                     data: 'default',
                 },
             });
-            messenger.sendMessageToChild({
+            await messenger.sendMessageToChild({
                 iframeElement: undefined as any,
                 message: {
                     // cannot send error type
@@ -101,7 +101,7 @@ describe(createIframeMessenger.name, () => {
                 },
             });
             // ExampleMessageType.SendScalingMethod requires a specific kind of data
-            messenger.sendMessageToChild({
+            await messenger.sendMessageToChild({
                 iframeElement: undefined as any,
                 message: {
                     type: ExampleMessageType.SendScalingMethod,
